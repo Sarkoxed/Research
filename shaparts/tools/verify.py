@@ -40,6 +40,8 @@ for i in range(nout):
 
 w = []
 i = 0
+print("__________________________________________________________")
+print("Найденные witness:")
 if argv[1] == "1":
     if s.check() == sat:
         m = s.model()
@@ -57,7 +59,7 @@ else:
         for x in vars:
             w.append(str(m[x]))
 
-        print("".join(w), len(w))
+        print("".join(w))#len(w))
         with open(f"calculations/input{str(i).zfill(2)}.json", "wt") as f:
             json.dump({"in": [w[x] for x in range(len(w)) if "main.in" in map[x]]}, f)
 

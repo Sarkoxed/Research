@@ -14,10 +14,10 @@ init:
 	@printf "pragma circom 2.0.0;\n\ninclude \"temp.circom\";\n\ncomponent main = temp();" > src/main.circom
 
 .PHONY: verify
-verify: witness map veripy
+verify: constraints witness map veripy
 
 .PHONY: deep_verify
-deep_verify: map deep_veripy
+deep_verify: constraints witness map deep_veripy
 
 .PHONY: check
 check: deep_verify tools/verify.py constraints/constr.json witness/witness.json tools/map.js
@@ -58,3 +58,10 @@ self_gen_witness: data/input1.json src/main.circom
 .PHONY: test
 test: tools/test.js src/main.circom
 	@mocha tools/test.js
+
+.PHONY: clean
+clean: 
+	@echo "Cleaning constraints, witness, twitness directories"
+	@rm constraints/* 2>/dev/null
+	@rm -r witness/* 2>/dev/null
+	@rm -r twitness/* 2>/dev/null
