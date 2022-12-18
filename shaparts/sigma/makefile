@@ -17,7 +17,7 @@ init:
 verify: witness map veripy
 
 .PHONY: deep_verify
-deep_verify: witness map deep_veripy
+deep_verify: map deep_veripy
 
 .PHONY: check
 check: deep_verify tools/verify.py constraints/constr.json witness/witness.json tools/map.js
