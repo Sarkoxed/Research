@@ -60,10 +60,6 @@ if argv[1] == "1":
         m = s.model()
         for x in inp:
             w.append(str(m[x]))
-    #        with open("twitness/witness.json", "wt") as f:
-    #            json.dump(w, f)
-    #        with open("data/calculated_input.json", "wt") as f:
-    #            json.dump([w[x] for x in range(len(w)) if "main.in" in map[x]], f)
     else:
         print("unsat")
 else:
@@ -72,9 +68,7 @@ else:
         for x in inp:
             w.append(str(m[x]))
 
-        print("".join(w))  # len(w))
-        #        with open(f"calculations/input{str(i).zfill(2)}.json", "wt") as f:
-        #            json.dump({"in": [w[x] for x in range(len(w)) if "main.in" in map[x]]}, f)
+        print("".join(w))
 
         new = []
         for x in inp:
