@@ -69,7 +69,7 @@ def gen_r1cs(inp, out, constrs, map, nvars, p):
         s.add(a * b - c == 0)
 
     for i in range(nout):            # TODO change that to if "main,out" in ...
-        s.add(vars[i + 1] == out[i]) # this might be changed to != 
+        s.add(vars[i + 1] != out[i]) # this might be changed to != 
     return s
 
 
@@ -91,7 +91,7 @@ print(s.check())
 #if argv[1] == "1":
 #    if s.check() == sat:
 #        m = s.model()
-#        for x in vars:
+#        for x in inp:
 #            w.append(str(m[x]))
 #        with open("twitness/witness.json", "wt") as f:
 #            json.dump(w, f)
@@ -102,7 +102,7 @@ print(s.check())
 #else:
 #    while s.check() == sat:
 #        m = s.model()
-#        for x in vars:
+#        for x in inp:
 #            w.append(str(m[x]))
 #
 #        print("".join(w))#len(w))
@@ -110,7 +110,7 @@ print(s.check())
 #            json.dump({"in": [w[x] for x in range(len(w)) if "main.in" in map[x]]}, f)
 #
 #        new = []
-#        for x in vars:
+#        for x in inp:
 #            new.append(x != m[x])
 #        s.add(Or(new))
 #        w = []
