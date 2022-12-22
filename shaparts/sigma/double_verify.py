@@ -69,7 +69,7 @@ def gen_r1cs(inp, out, constrs, map, nvars, p):
         s.add(a * b - c == 0)
 
     for i in range(nout):            # TODO change that to if "main,out" in ...
-        s.add(vars[i + 1] == out[i])
+        s.add(vars[i + 1] == out[i]) # this might be changed to != 
     return s
 
 
