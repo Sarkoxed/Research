@@ -85,36 +85,40 @@ inp = [BitVec(f"f_{i}", 1) for i in range(ninp)]
 out = gen_python(inp)
 s = gen_r1cs(inp, out, constrs, map, nvars, p)
 
-print(s.check())
-# w = []
-# i = 0
-# if argv[1] == "1":
-#    if s.check() == sat:
-#        m = s.model()
-#        for x in inp:
-#            w.append(str(m[x]))
-#        with open("twitness/witness.json", "wt") as f:
-#            json.dump(w, f)
-#        with open("data/calculated_input.json", "wt") as f:
-#            json.dump([w[x] for x in range(len(w)) if "main.in" in map[x]], f)
-#    else:
-#        print("unsat")
-# else:
-#    while s.check() == sat:
-#        m = s.model()
-#        for x in inp:
-#            w.append(str(m[x]))
-#
-#        print("".join(w))#len(w))
-#        with open(f"calculations/input{str(i).zfill(2)}.json", "wt") as f:
-#            json.dump({"in": [w[x] for x in range(len(w)) if "main.in" in map[x]]}, f)
-#
-#        new = []
-#        for x in inp:
-#            new.append(x != m[x])
-#        s.add(Or(new))
-#        w = []
-#        i += 1
-#        if i > 20:
-#            print("too much")
-#            exit()
+res = s.check()
+print(res)
+if res == sat:
+    w = []
+    i = 0
+    if argv[1] == "1":
+        if s.check() == sat:
+            m = s.model()
+            for x in inp:
+                w.append(str(m[x]))
+            with open("twitness/witness.json", "wt") as f:
+                json.dump(w, f)
+            with open("data/calculated_input.json", "wt") as f:
+                json.dump([w[x] for x in range(len(w)) if "main.in" in map[x]], f)
+        else:
+            print("unsat")
+    else:
+        while s.check() == sat:
+            m = s.model()
+            for x in inp:
+                w.append(str(m[x]))
+
+            print("".join(w))  # len(w))
+            with open(f"calculations/input{str(i).zfill(2)}.json", "wt") as f:
+                json.dump(
+                    {"in": [w[x] for x in range(len(w)) if "main.in" in map[x]]}, f
+                )
+
+            new = []
+            for x in inp:
+                new.append(x != m[x])
+            s.add(Or(new))
+            w = []
+            i += 1
+            if i > 20:
+                print("too much")
+                exit()
