@@ -36,7 +36,7 @@ def RotR(n, r, inp):
     return out
 
 
-def gen_python(inp, ar = 1, br=2, cr=5):
+def gen_python(inp, ar=1, br=2, cr=3):
     out = SmallSigma(inp, ar, br, cr)
     return out
 
@@ -53,7 +53,7 @@ def gen_r1cs(inp, out, constrs, map, nvars, p):
 
     s = Solver()
     s.add(vars[0] == 1)
-    
+
     for constr in constrs["constraints"]:
         abc = []
         for i in range(3):
@@ -68,8 +68,8 @@ def gen_r1cs(inp, out, constrs, map, nvars, p):
         a, b, c = abc
         s.add(a * b - c == 0)
 
-    for i in range(nout):            # TODO change that to if "main,out" in ...
-        s.add(vars[i + 1] != out[i]) # this might be changed to != 
+    for i in range(nout):  # TODO change that to if "main,out" in ...
+        s.add(vars[i + 1] != out[i])  # this might be changed to !=
     return s
 
 
@@ -86,9 +86,9 @@ out = gen_python(inp)
 s = gen_r1cs(inp, out, constrs, map, nvars, p)
 
 print(s.check())
-#w = []
-#i = 0
-#if argv[1] == "1":
+# w = []
+# i = 0
+# if argv[1] == "1":
 #    if s.check() == sat:
 #        m = s.model()
 #        for x in inp:
@@ -99,7 +99,7 @@ print(s.check())
 #            json.dump([w[x] for x in range(len(w)) if "main.in" in map[x]], f)
 #    else:
 #        print("unsat")
-#else:
+# else:
 #    while s.check() == sat:
 #        m = s.model()
 #        for x in inp:
