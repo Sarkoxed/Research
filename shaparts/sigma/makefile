@@ -1,6 +1,8 @@
 .PHONY: default
 default: init
 
+all: constraints witness map
+
 .PHONY: init
 init:
 	@mkdir src || true
