@@ -2,80 +2,67 @@ from z3 import BitVec, Or, And, sat, unsat, Solver
 import json
 from sys import argv
 
-
-def SmallSigma(inp, ra, rb, rc):
-    rota = RotR(32, ra, inp)
-    rotb = RotR(32, rb, inp)
-    shrc = ShR(32, rc, inp)
-
-    s = xor3(rota, rotb, shrc, 32)
-    return s
+from python_function import f, params
 
 
-def xor3(a, b, c, n):
-    mid = []
-    for k in range(n):
-        mid.append(b[k] ^ c[k] ^ a[k])
-    return mid
-
-
-def ShR(n, r, inp):
-    out = []
-    for i in range(n):
-        if i + r >= n:
-            out.append(0)
+def find_all_solutions(s, vars, bound):
+    w = []
+    i = 0
+    print("_______________________________________________")
+    print("Найденные Входные сигналы:")
+    if argv[1] == "--1":
+        if s.check() == sat:
+            m = s.model()
+            for x in vars:
+                w.append(str(m[x]))
         else:
-            out.append(inp[i + r])
-    return out
+            print("unsat")
 
+    elif argv[1] == "--all":
+        while s.check() == sat:
+            m = s.model()
+            for x in vars:
+                w.append(str(m[x]))
 
-def RotR(n, r, inp):
-    out = []
-    for i in range(n):
-        out.append(inp[(i + r) % n])
-    return out
+            print("".join(w))
 
-
-constrs = json.load(open("constraints/constr.json"))
-witness = json.load(open("witness/witness.json"))
-nvars = constrs["nVars"]
-nout = constrs["nOutputs"]
-out0 = [int(x) for x in witness[1 : 1 + nout]]
-
-
-inp = [BitVec(f"f_{i}", 1) for i in range(32)]
-ar, br, cr = 1, 2, 3
-out = SmallSigma(inp, ar, br, cr)
-
-s = Solver()
-for i in range(len(out)):
-    s.add(out[i] == out0[i])
-
-w = []
-i = 0
-print("__________________________________________________________")
-print("Найденные Входные сигналы:")
-if argv[1] == "1":
-    if s.check() == sat:
-        m = s.model()
-        for x in inp:
-            w.append(str(m[x]))
+            new = []
+            for x in vars:
+                new.append(x != m[x])
+            s.add(Or(new))
+            w = []
+            i += 1
+            if i > bound:
+                print("too much")
+                exit()
     else:
-        print("unsat")
-else:
-    while s.check() == sat:
-        m = s.model()
-        for x in inp:
-            w.append(str(m[x]))
+        print("unknown option")
 
-        print("".join(w))
 
-        new = []
-        for x in inp:
-            new.append(x != m[x])
-        s.add(Or(new))
-        w = []
-        i += 1
-        if i > 20:
-            print("too much")
-            exit()
+def verify(bound, flag=True):
+    constrs = json.load(open("constraints/constr.json"))
+    witness = json.load(open("witness/witness.json"))
+    #map = json.load(open("data/map.json"))["map"]
+
+    nvars = constrs["nVars"]
+    nout = constrs["nOutputs"]
+    nPubInputs = constrs["nPubInputs"]
+    nPrvInputs = constrs["nPrvInputs"]
+
+    out_exp = [int(x) for x in witness[1: 1 + nout]]
+
+    inp = [BitVec(f"python_var_{i}", 1) for i in range(nPrvInputs)]
+    out = f(inp, *params)
+
+    s = Solver()
+    for i in range(nout):
+        s.add(out_exp[i] == out[i])
+
+    if flag:
+        find_all_solutions(s, inp, bound)
+    else:
+        return out
+
+
+if __name__ == "__main__":
+    verify(20)
