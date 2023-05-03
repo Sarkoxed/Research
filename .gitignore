@@ -3,8 +3,5 @@ data/
 witness/
 twitness/
 calculations/
-rotate/
-xor3/
-shift/
 *.out
 *.txt
