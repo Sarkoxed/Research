@@ -3,5 +3,6 @@ data/
 witness/
 twitness/
 calculations/
+__pycache__/
 *.out
 *.txt
