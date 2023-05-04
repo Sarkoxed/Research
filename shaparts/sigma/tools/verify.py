@@ -56,13 +56,10 @@ def verify(bound=20, flag=True):
 
     p = int(constrs["prime"])
 
-    out = [int(x) for x in witness[: 1 + nout]] # out[0] = 1
     vars = [BitVec(f"r1cs_var_{i}", 1) for i in range(nvars)]
 
     s = Solver()
-    for i in range(nout + 1):  # 1 included
-        s.add(vars[i] == out[i])
-
+    s.add(vars[0] == 1)
     for constr in constrs["constraints"]:
         abc = []
         for i in range(3):
@@ -78,6 +75,9 @@ def verify(bound=20, flag=True):
         s.add(a * b - c == 0)
 
     if flag:
+        out = [int(x) for x in witness[: 1 + nout]]  # out[0] = 1
+        for i in range(nout + 1):  # 1 included
+            s.add(vars[i] == out[i])
         find_all_solutions(s, map, vars, bound)
     else:
         return (s, vars)
