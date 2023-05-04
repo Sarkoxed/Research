@@ -63,7 +63,8 @@ test: tools/test.js src/main.circom
 
 .PHONY: clean
 clean: 
-	@echo "Cleaning constraints, witness, twitness directories"
-	@rm constraints/* 2>/dev/null
-	@rm -r witness/* 2>/dev/null
-	@rm -r twitness/* 2>/dev/null
+	@echo "Cleaning constraints, witness, twitness and calculations directories"
+	@rm constraints/* 2>/dev/null || true
+	@rm -r witness/* 2>/dev/null || true
+	@rm -r twitness/* 2>/dev/null || true
+	@rm -r calculations/* 2>/dev/null || true
