@@ -1,6 +1,20 @@
 .PHONY: default
 default: init
 
+all: constraints witness map
+
+.PHONY: init
+init:
+	@mkdir src || true
+	@mkdir data || true
+	@mkdir witness || true
+	@mkdir twitness || true
+	@mkdir constraints || true
+	@mkdir calculations || true
+	@cp -r ../tools tools || true
+	@touch src/main.circom || true
+	@printf "pragma circom 2.0.0;\n\ninclude \"temp.circom\";\n\ncomponent main = temp();" > src/main.circom
+
 .PHONY: verify
 verify: constraints witness map veripy
 
@@ -49,7 +63,8 @@ test: tools/test.js src/main.circom
 
 .PHONY: clean
 clean: 
-	@echo "Cleaning constraints, witness, twitness directories"
-	@rm constraints/* 2>/dev/null
-	@rm -r witness/* 2>/dev/null
-	@rm -r twitness/* 2>/dev/null
+	@echo "Cleaning constraints, witness, twitness and calculations directories"
+	@rm constraints/* 2>/dev/null || true
+	@rm -r witness/* 2>/dev/null || true
+	@rm -r twitness/* 2>/dev/null || true
+	@rm -r calculations/* 2>/dev/null || true
