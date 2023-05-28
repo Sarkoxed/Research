@@ -17,14 +17,14 @@ def verify(bound=20):
 
     print("Вычисляется cхема SmallSigma...")
     s, vars = constrs_r1cs(flag=False)
-    
-    inp = vars[1 + nout: 1 + nout + nPrvInputs]
+
+    inp = vars[1 + nout : 1 + nout + nPrvInputs]
     print("Вычисляется схема SmallSigma...")
     out_python = function(inp, *params)
 
     newconstrs = []
     for i in range(1, 1 + nout):
-        newconstrs.append(vars[i] != out_python[i-1])
+        newconstrs.append(vars[i] != out_python[i - 1])
     s.add(Or(newconstrs))
 
     print("Проверяетcя эквивалентность...")
@@ -51,13 +51,13 @@ def verify(bound=20):
                 m = s.model()
                 for x in inp:
                     w.append(str(m[x]))
-    
+
                 print("".join(w))  # len(w))
                 with open(f"calculations/input{str(i).zfill(2)}.json", "wt") as f:
                     json.dump(
                         {"in": [w[x] for x in range(len(w)) if "main.in" in map[x]]}, f
                     )
-    
+
                 new = []
                 for x in inp:
                     new.append(x != m[x])
@@ -69,5 +69,6 @@ def verify(bound=20):
                     break
         else:
             print("unknown option")
+
 
 verify()

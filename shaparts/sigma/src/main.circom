@@ -2,4 +2,4 @@ pragma circom 2.0.0;
 
 include "sigma.circom";
 
-component main = SmallSigma(1, 2, 3);
+component main = SmallSigma(17,19,10);

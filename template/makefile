@@ -15,18 +15,6 @@ init:
 	@touch src/main.circom || true
 	@printf "pragma circom 2.0.0;\n\ninclude \"temp.circom\";\n\ncomponent main = temp();" > src/main.circom
 
-.PHONY: verify
-verify: constraints witness map veripy
-
-.PHONY: deep_verify
-deep_verify: constraints witness map deep_veripy
-
-.PHONY: check
-check: deep_verify tools/verify.py constraints/constr.json witness/witness.json tools/map.js
-	@rm calculations/*
-	@python tools/verify.py 2
-	@tools/check.sh
-
 .PHONY: witness
 witness: src/*.circom data/input.json
 	@circom src/main.circom --wasm -o witness/
@@ -43,16 +31,29 @@ constraints: src/*.circom
 map: constraints
 	@node tools/map.js
 
-.PHONY: veripy
-veripy: tools/verify.py constraints/constr.json witness/witness.json 
-	@python tools/verify.py 1
+.PHONY: verify
+verify: constraints witness map veripy
 
-.PHONY: deep_veripy
-deep_veripy: tools/verify.py constraints/constr.json witness/witness.json tools/map.js
+.PHONY: deep_verify
+deep_verify: constraints witness map deep_veripy
+
+.PHONY: check
+check: deep_verify tools/verify.py constraints/constr.json witness/witness.json tools/map.js
+	@rm calculations/*
 	@python tools/verify.py 2
+	@tools/check.sh
+
+
+.PHONY: verify_circuit
+verify_circuit: constraints witness map tools/verify.py  
+	@python tools/verify.py --all
+
+.PHONY: verify_equal
+verify_equal: constraints witness map verify_equal.py python_function.py 
+	@python verify_equal.py --all
 
 .PHONY: self_witness
-self_gen_witness: data/input1.json src/main.circom
+self_witness: data/input1.json src/main.circom
 	@circom src/main.circom --wasm -o twitness/
 	@snarkjs wc twitness/main_js/main.wasm data/input1.json twitness/witness.wtns 
 	@snarkjs wej twitness/witness.wtns twitness/witness.json

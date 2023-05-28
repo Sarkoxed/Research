@@ -39,30 +39,49 @@ def find_all_solutions(s, vars, bound):
         print("unknown option")
 
 
-def verify(bound, flag=True):
+def verify(bound):
     constrs = json.load(open("constraints/constr.json"))
     witness = json.load(open("witness/witness.json"))
-    #map = json.load(open("data/map.json"))["map"]
+    # map = json.load(open("data/map.json"))["map"]
 
     nvars = constrs["nVars"]
     nout = constrs["nOutputs"]
     nPubInputs = constrs["nPubInputs"]
     nPrvInputs = constrs["nPrvInputs"]
 
-    out_exp = [int(x) for x in witness[1: 1 + nout]]
+    out_exp = [int(x) for x in witness[1 : 1 + nout]]
 
-    inp = [BitVec(f"python_var_{i}", 1) for i in range(nPrvInputs)]
+    inp = [BitVec(f"python_var_{i}", 32) for i in range(nPrvInputs)]
     out = f(inp, *params)
-
+    
+    print(out)
     s = Solver()
     for i in range(nout):
         s.add(out_exp[i] == out[i])
 
-    if flag:
-        find_all_solutions(s, inp, bound)
-    else:
-        return out
+    find_all_solutions(s, inp, bound)
+
+
+def check_witness():
+    constrs = json.load(open("constraints/constr.json"))
+    witness = json.load(open("witness/witness.json"))
+    # map = json.load(open("data/map.json"))["map"]
+
+    nvars = constrs["nVars"]
+    nout = constrs["nOutputs"]
+    nPubInputs = constrs["nPubInputs"]
+    nPrvInputs = constrs["nPrvInputs"]
+
+    out_exp = [int(x) for x in witness[1 : 1 + nout]]
+
+    inp = [int(x) for x in witness[1 + nout : 1 + nout + nPrvInputs]]
+    out = f(inp, *params)
+    print(out)
+    print(out_exp)
+
+    assert out == out_exp
 
 
 if __name__ == "__main__":
-    verify(20)
+    check_witness()
+    #verify(20)

@@ -18,8 +18,8 @@ def verify(bound=20):
     print("Вычисляется cхема SmallSigma...")
     s, vars = constrs_r1cs(flag=False)
     
-    inp = vars[1 + nout: 1 + nout + nPrvInputs]
-    print("Вычисляется схема SmallSigma...")
+    inp = vars[1 + nout: 1 + nout + nPrvInputs] # TODO NOT PRESENT
+    print("Вычисляется SmallSigma...")
     out_python = function(inp, *params)
 
     newconstrs = []
